@@ -12,7 +12,7 @@ app.use(express.json());
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.2kfdekm.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -45,8 +45,9 @@ async function run() {
 
 
 
-        //APi to get by email
-        app.get('/addToCard', async (req, res) => {
+        //APi cart related 
+
+        app.get('/card', async (req, res) => {
             const email = req.query.email;
             if (!email) {
                 res.send([]);
@@ -57,7 +58,7 @@ async function run() {
 
         })
 
-        app.post('/addToCard', async (req, res) => {
+        app.post('/card', async (req, res) => {
             const item = req.body;
             console.log(item);
             const result = await cardCollection.insertOne(item);
@@ -65,6 +66,12 @@ async function run() {
         })
 
 
+        app.delete('/card/:id', async (req, res) => {
+            const id = parseInt(req.params.id);
+            // const query = { _id: new ObjectId(id) }
+            const result = await cardCollection.deleteOne({ _id: id });
+            res.send(result)
+        })
 
 
 
