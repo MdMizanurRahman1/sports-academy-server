@@ -31,7 +31,7 @@ async function run() {
 
         const classCollection = client.db("sportDb").collection("popularClass");
         const instructorCollection = client.db("sportDb").collection("instructor");
-
+        const cardCollection = client.db("sportDb").collection("card");
 
         app.get('/class', async (req, res) => {
             const result = await classCollection.find().toArray();
@@ -45,7 +45,24 @@ async function run() {
 
 
 
+        //APi to get by email
+        app.get('/addToCard', async (req, res) => {
+            const email = req.query.email;
+            if (!email) {
+                res.send([]);
+            }
+            const query = { email: email };
+            const result = await cardCollection.find(query).toArray();
+            res.send(result);
 
+        })
+
+        app.post('/addToCard', async (req, res) => {
+            const item = req.body;
+            console.log(item);
+            const result = await cardCollection.insertOne(item);
+            res.send(result);
+        })
 
 
 
