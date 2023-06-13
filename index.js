@@ -51,6 +51,7 @@ async function run() {
         const classCollection = client.db("sportDb").collection("popularClass");
         const instructorCollection = client.db("sportDb").collection("instructor");
         const cardCollection = client.db("sportDb").collection("card");
+        const addCollection = client.db("sportDb").collection("addClass");
 
 
 
@@ -66,6 +67,17 @@ async function run() {
             const query = { email: email }
             const user = await usersCollection.findOne(query);
             if (user?.role !== 'admin') {
+                return res.status(403).send({ error: true, message: 'forbidden message' });
+            }
+            next();
+        }
+
+        //TODO verifyJWT before using verifyInstructor
+        const verifyInstructor = async (req, res, next) => {
+            const email = req.decoded.email;
+            const query = { email: email }
+            const user = await usersCollection.findOne(query);
+            if (user?.role !== 'instructor') {
                 return res.status(403).send({ error: true, message: 'forbidden message' });
             }
             next();
@@ -158,6 +170,16 @@ async function run() {
             const result = await classCollection.find().toArray();
             res.send(result)
         })
+
+        //TODO secure for instructor
+        app.post('/add', verifyJWT, verifyInstructor, async (req, res) => {
+            const newItem = req.body;
+            const result = await addCollection.insertOne(newItem)
+            res.send(result);
+        })
+
+
+
         app.get('/instructor', async (req, res) => {
             const result = await instructorCollection.find().toArray();
             res.send(result)
