@@ -166,10 +166,19 @@ async function run() {
 
 
 
+
+        //popular class in home page experiment...can be changed later
+
         app.get('/class', async (req, res) => {
             const result = await classCollection.find().toArray();
             res.send(result)
         })
+        //for classes api
+
+        // app.get('/classadd', async (req, res) => {
+        //     const result = await addCollection.find().toArray();
+        //     res.send(result)
+        // })
 
         //TODO secure for instructor
         app.post('/add', verifyJWT, verifyInstructor, async (req, res) => {
@@ -177,6 +186,13 @@ async function run() {
             const result = await addCollection.insertOne(newItem)
             res.send(result);
         })
+
+        app.get('/add', async (req, res) => {
+            const result = await addCollection.find().toArray();
+            res.send(result)
+        })
+
+
 
 
 
