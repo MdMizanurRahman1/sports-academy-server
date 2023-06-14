@@ -53,6 +53,7 @@ async function run() {
         const instructorCollection = client.db("sportDb").collection("instructor");
         const cardCollection = client.db("sportDb").collection("card");
         const addCollection = client.db("sportDb").collection("addClass");
+        const paymentCollection = client.db("sportDb").collection("payments");
 
 
 
@@ -252,6 +253,7 @@ async function run() {
             res.send(result)
         })
 
+
         // Create a Payment Intent
         app.post('/create-payment-intent', verifyJWT, async (req, res) => {
             const { price } = req.body;
@@ -267,6 +269,27 @@ async function run() {
         })
 
 
+        // // payment related api
+        // app.post('/payments', verifyJWT, async (req, res) => {
+        //     const payment = req.body;
+        //     const insertResult = await paymentCollection.insertOne(payment);
+
+        //     const itemId = payment.id;
+        //     // const query = { _id: new ObjectId(itemId) };
+        //     const deleteResult = await cardCollection.deleteOne({ _id: id });
+        //     res.send({ insertResult, deleteResult });
+        // })
+
+
+        app.post('/payments', verifyJWT, async (req, res) => {
+            const payment = req.body;
+            const insertResult = await paymentCollection.insertOne(payment);
+
+            const itemId = payment.id;
+            const deleteResult = await cardCollection.deleteOne({ _id: itemId });
+
+            res.send({ insertResult, deleteResult });
+        });
 
 
 
