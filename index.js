@@ -269,18 +269,6 @@ async function run() {
         })
 
 
-        // // payment related api
-        // app.post('/payments', verifyJWT, async (req, res) => {
-        //     const payment = req.body;
-        //     const insertResult = await paymentCollection.insertOne(payment);
-
-        //     const itemId = payment.id;
-        //     // const query = { _id: new ObjectId(itemId) };
-        //     const deleteResult = await cardCollection.deleteOne({ _id: id });
-        //     res.send({ insertResult, deleteResult });
-        // })
-
-
         app.post('/payments', verifyJWT, async (req, res) => {
             const payment = req.body;
             const insertResult = await paymentCollection.insertOne(payment);
@@ -291,6 +279,16 @@ async function run() {
             res.send({ insertResult, deleteResult });
         });
 
+
+        // app.get('/payments', async (req, res) => {
+        //     const result = await paymentCollection.find().toArray();
+        //     res.send(result)
+        // })
+
+        app.get('/payments', async (req, res) => {
+            const result = await paymentCollection.find().sort({ date: -1 }).toArray();
+            res.send(result);
+        });
 
 
 
