@@ -45,7 +45,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
 
         const usersCollection = client.db("sportDb").collection("users");
@@ -171,16 +171,21 @@ async function run() {
 
         //popular class in home page experiment...can be changed later
 
-        app.get('/class', async (req, res) => {
-            const result = await classCollection.find().toArray();
-            res.send(result)
-        })
-        //for classes api
-
-        // app.get('/classadd', async (req, res) => {
-        //     const result = await addCollection.find().toArray();
+        // app.get('/class', async (req, res) => {
+        //     const result = await classCollection.find().toArray();
         //     res.send(result)
         // })
+
+        app.get('/class', async (req, res) => {
+            const result = await classCollection.find()
+                .sort({ students: -1 }) // Sort in descending order based on the "students" field
+                .limit(6) // Limit the results to 6 documents
+                .toArray();
+            res.send(result);
+        });
+
+
+
 
         //TODO secure for instructor
         app.post('/add', verifyJWT, verifyInstructor, async (req, res) => {
@@ -293,7 +298,7 @@ async function run() {
 
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
